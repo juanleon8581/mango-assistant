@@ -30,8 +30,23 @@ def merge_configs(config_dir: Path) -> list[str]:
         if local_key in default_cats:
             default_shortcut = str(default_cats[local_key].get("shortcut", ""))
             if local_shortcut == default_shortcut:
-                # Exact match — macro merge (task 3.2)
-                pass
+                # Exact match — merge macros
+                default_macros: dict = merged_cats[local_key]["macros"]
+                default_macro_shortcuts = {str(m.get("shortcut", "")) for m in default_macros.values()}
+                for macro_key, macro_data in (local_data.get("macros") or {}).items():
+                    macro_shortcut = str(macro_data.get("shortcut", ""))
+                    if macro_key in default_macros:
+                        warnings.append(
+                            f"[mango] config conflict: macro '{local_key}>{macro_key}' — "
+                            f"key already exists in default (skipped)"
+                        )
+                    elif macro_shortcut in default_macro_shortcuts:
+                        warnings.append(
+                            f"[mango] config conflict: macro '{local_key}>{macro_key}' — "
+                            f"shortcut '{macro_shortcut}' already used by a default macro (skipped)"
+                        )
+                    else:
+                        merged_cats[local_key]["macros"][macro_key] = macro_data
             else:
                 warnings.append(
                     f"[mango] config conflict: category '{local_key}' — "

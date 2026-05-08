@@ -11,7 +11,7 @@
 ## 3. Implement Merge Engine
 
 - [x] 3.1 Create `src/mango/merger.py` with a `merge_configs(config_dir: Path) -> list[str]` function that applies category merge rules (exact match → merge macros, new category → include entirely, partial match → omit + collect warning)
-- [ ] 3.2 Add macro merge logic inside the shared-category branch: include a local macro only if neither its key nor its shortcut collides with any default macro in that category; otherwise collect a warning
+- [x] 3.2 Add macro merge logic inside the shared-category branch: include a local macro only if neither its key nor its shortcut collides with any default macro in that category; otherwise collect a warning
 - [ ] 3.3 Write the merged `categories` dict to `commands.yaml` using `yaml.dump` and print each collected warning to stderr with the `[mango] config conflict:` prefix
 
 ## 4. Implement Lazy Hash Sidecar
