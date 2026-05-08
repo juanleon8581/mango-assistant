@@ -5,8 +5,8 @@
 
 ## 2. Update ensure_config() — Default Propagation
 
-- [ ] 2.1 Add a `_file_sha256(path: Path) -> str` helper in `config.py` that returns the SHA-256 hex digest of a file's content
-- [ ] 2.2 Replace the current `ensure_config()` with new logic: propagate the `config.default.yaml` package resource to `~/.config/mango/config.default.yaml` on every startup, writing only when the file is absent or the hash differs from the resource
+- [x] 2.1 Add a `_file_sha256(path: Path) -> str` helper in `config.py` that returns the SHA-256 hex digest of a file's content
+- [x] 2.2 Replace the current `ensure_config()` with new logic: propagate the `config.default.yaml` package resource to `~/.config/mango/config.default.yaml` on every startup, writing only when the file is absent or the hash differs from the resource
 
 ## 3. Implement Merge Engine
 

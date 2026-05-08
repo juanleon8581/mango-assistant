@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from importlib.resources import files
 from pathlib import Path
+import hashlib
 import os
 import yaml
 
@@ -32,17 +33,24 @@ class Config:
 
 
 
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def get_config_path() -> Path:
     xdg_config = os.environ.get("XDG_CONFIG_HOME", "")
     base = Path(xdg_config) if xdg_config else Path.home() / ".config"
     return base / "mango" / "commands.yaml"
 
 
-def ensure_config(path: Path) -> None:
-    if not path.exists():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        content = files("mango").joinpath("config.default.yaml").read_text(encoding="utf-8")
-        path.write_text(content)
+def ensure_config(config_dir: Path) -> None:
+    config_dir.mkdir(parents=True, exist_ok=True)
+    resource = files("mango").joinpath("config.default.yaml")
+    content = resource.read_bytes()
+    resource_hash = hashlib.sha256(content).hexdigest()
+    dest = config_dir / "config.default.yaml"
+    if not dest.exists() or _file_sha256(dest) != resource_hash:
+        dest.write_bytes(content)
 
 
 def _parse_param(data: object, macro_name: str, idx: int) -> Param:

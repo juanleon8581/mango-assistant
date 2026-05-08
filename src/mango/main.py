@@ -6,8 +6,9 @@ from .config import ensure_config, get_config_path, load_config
 
 def main() -> None:
     config_path = get_config_path()
+    config_dir = config_path.parent
     try:
-        ensure_config(config_path)
+        ensure_config(config_dir)
         config = load_config(config_path)
     except Exception as exc:
         print(f"mango: config error — {exc}", file=sys.stderr)
