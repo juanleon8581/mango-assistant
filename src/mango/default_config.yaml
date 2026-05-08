@@ -2,6 +2,15 @@ categories:
   git:
     shortcut: "g"
     macros:
+      create-branch-push:
+        shortcut: "cbp"
+        description: "Create a new branch and push it to origin"
+        params:
+          - name: branch
+            prompt: "Branch name"
+        steps:
+          - git checkout -b {branch}
+          - git push -u origin {branch}
       switch-and-pull:
         shortcut: "su"
         description: "Switch branch, fetch and pull"
