@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mango"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "textual>=0.60.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+mango = "mango.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

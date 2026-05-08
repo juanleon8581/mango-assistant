@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: mango
+Version: 0.1.0
+Requires-Python: >=3.10
+Requires-Dist: textual>=0.60.0
+Requires-Dist: pyyaml>=6.0
