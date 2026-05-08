@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from importlib.resources import files
 from pathlib import Path
 import os
 import yaml
@@ -30,54 +31,6 @@ class Config:
     categories: dict[str, Category]
 
 
-EXAMPLE_CONFIG = """\
-categories:
-  git:
-    shortcut: "g"
-    macros:
-      switch-and-pull:
-        shortcut: "su"
-        description: "Switch branch, fetch and pull"
-        params:
-          - name: branch
-            prompt: "Branch name"
-        steps:
-          - git checkout {branch}
-          - git fetch
-          - git pull
-      status:
-        shortcut: "st"
-        description: "Show git status"
-        steps:
-          - git status
-      log:
-        shortcut: "lo"
-        description: "Show recent commits"
-        steps:
-          - git log --oneline -10
-  docker:
-    shortcut: "d"
-    macros:
-      up:
-        shortcut: "up"
-        description: "Start containers"
-        steps:
-          - docker compose up -d
-      down:
-        shortcut: "dn"
-        description: "Stop containers"
-        steps:
-          - docker compose down
-      logs:
-        shortcut: "lg"
-        description: "Follow logs for a service"
-        params:
-          - name: service
-            prompt: "Service name"
-        steps:
-          - docker compose logs -f {service}
-"""
-
 
 def get_config_path() -> Path:
     xdg_config = os.environ.get("XDG_CONFIG_HOME", "")
@@ -88,7 +41,8 @@ def get_config_path() -> Path:
 def ensure_config(path: Path) -> None:
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(EXAMPLE_CONFIG)
+        content = files("mango").joinpath("default_config.yaml").read_text(encoding="utf-8")
+        path.write_text(content)
 
 
 def _parse_param(data: object, macro_name: str, idx: int) -> Param:
