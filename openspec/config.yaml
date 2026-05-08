@@ -1,20 +1,12 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Tech stack: Python + Textual (TUI framework)
+  Este es un proyecto personal de aprendizaje — el usuario prioriza entendimiento sobre velocidad.
+  El usuario viene de Node.js/TypeScript y está aprendiendo Python.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  tasks:
+    - Implementar UNA sola tarea por turno, luego detenerse y esperar aprobación explícita del usuario antes de continuar con la siguiente.
+    - Al completar una tarea, mostrar un resumen claro de qué se implementó y por qué se tomaron las decisiones técnicas clave, orientado a alguien que aprende Python desde JS/TS.
+    - No avanzar a la siguiente tarea hasta que el usuario confirme con "ok", "siguiente", "continúa" o equivalente.
