@@ -41,7 +41,7 @@ def get_config_path() -> Path:
 def ensure_config(path: Path) -> None:
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
-        content = files("mango").joinpath("default_config.yaml").read_text(encoding="utf-8")
+        content = files("mango").joinpath("config.default.yaml").read_text(encoding="utf-8")
         path.write_text(content)
 
 

@@ -1,7 +1,7 @@
 ## 1. Rename Package Resource
 
-- [ ] 1.1 Rename `src/mango/default_config.yaml` to `src/mango/config.default.yaml`
-- [ ] 1.2 Update `pyproject.toml` package data declaration and all code references (`config.py`, any other file) from `default_config.yaml` to `config.default.yaml`
+- [x] 1.1 Rename `src/mango/default_config.yaml` to `src/mango/config.default.yaml`
+- [x] 1.2 Update `pyproject.toml` package data declaration and all code references (`config.py`, any other file) from `default_config.yaml` to `config.default.yaml`
 
 ## 2. Update ensure_config() — Default Propagation
 
