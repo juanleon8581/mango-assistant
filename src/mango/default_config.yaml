@@ -3,7 +3,7 @@ categories:
     shortcut: "g"
     macros:
       create-branch-push:
-        shortcut: "cbp"
+        shortcut: "cb"
         description: "Create a new branch and push it to origin"
         params:
           - name: branch
