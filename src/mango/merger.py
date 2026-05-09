@@ -1,7 +1,22 @@
+import json
 import sys
 from pathlib import Path
 
 import yaml
+
+_MERGE_STATE_FILE = ".merge-state.json"
+
+
+def _load_merge_state(config_dir: Path) -> dict:
+    state_path = config_dir / _MERGE_STATE_FILE
+    if not state_path.exists():
+        return {}
+    return json.loads(state_path.read_text())
+
+
+def _save_merge_state(config_dir: Path, default_hash: str, local_hash: str | None) -> None:
+    state_path = config_dir / _MERGE_STATE_FILE
+    state_path.write_text(json.dumps({"default_hash": default_hash, "local_hash": local_hash}))
 
 
 def merge_configs(config_dir: Path) -> list[str]:

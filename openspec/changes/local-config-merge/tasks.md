@@ -16,7 +16,7 @@
 
 ## 4. Implement Lazy Hash Sidecar
 
-- [ ] 4.1 Add `_load_merge_state(config_dir: Path) -> dict` and `_save_merge_state(config_dir: Path, default_hash: str, local_hash: str | None) -> None` helpers in `merger.py` that read/write `.merge-state.json`
+- [x] 4.1 Add `_load_merge_state(config_dir: Path) -> dict` and `_save_merge_state(config_dir: Path, default_hash: str, local_hash: str | None) -> None` helpers in `merger.py` that read/write `.merge-state.json`
 - [ ] 4.2 Add `should_merge(config_dir: Path) -> bool` to `merger.py`: returns `True` if `.merge-state.json` is absent or either source hash differs from the stored values; wire this check into `merge_configs()` so it skips the merge and returns `[]` when not needed, and updates the sidecar after a successful merge
 
 ## 5. Integration
