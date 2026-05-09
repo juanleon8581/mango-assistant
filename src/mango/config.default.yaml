@@ -21,6 +21,16 @@ categories:
           - git checkout {branch}
           - git fetch
           - git pull
+      delete-branch-local-remote-and-prune:
+        shortcut: "db"
+        description: "Delete branch in local and remote, and prune"
+        params:
+          - name: branch
+            prompt: "Branch name"
+        steps:
+          - git push origin --delete {branch}
+          - git branch -D {branch}
+          - git fetch --prune
       status:
         shortcut: "st"
         description: "Show git status"
