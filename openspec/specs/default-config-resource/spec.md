@@ -2,35 +2,32 @@
 
 ## Purpose
 
-Provide the default configuration template as a package resource file (`default_config.yaml`) bundled inside the `mango` package, so that `ensure_config()` can read from it at runtime instead of relying on an inline string constant in `config.py`.
+Provide the default configuration template as a package resource file (`config.default.yaml`) bundled inside the `mango` package, so that `ensure_config()` can read from it at runtime instead of relying on an inline string constant in `config.py`.
 
 ## Requirements
 
 ### Requirement: Default config exists as a package resource file
-The system SHALL provide the default configuration template as a YAML file (`default_config.yaml`) located inside the `mango` package directory and declared as package data so it is included in all distribution formats.
+The system SHALL provide the default configuration template as a YAML file (`config.default.yaml`) located inside the `mango` package directory and declared as package data so it is included in all distribution formats.
 
 #### Scenario: File is accessible after pip install
 - **WHEN** the `mango` package is installed via `pip install`
-- **THEN** `importlib.resources.files("mango").joinpath("default_config.yaml")` SHALL resolve to a readable file
+- **THEN** `importlib.resources.files("mango").joinpath("config.default.yaml")` SHALL resolve to a readable file
 
 #### Scenario: File contains valid YAML
-- **WHEN** `default_config.yaml` is read
+- **WHEN** `config.default.yaml` is read
 - **THEN** its content SHALL be parseable by `yaml.safe_load` without errors
 
-### Requirement: ensure_config reads default template from package resource
-`ensure_config()` SHALL read the default config content from the `default_config.yaml` package resource using `importlib.resources`, and write it to the user config path when the file does not yet exist.
+### Requirement: ensure_config propagates default config on every startup
+`ensure_config()` SHALL propagate the `config.default.yaml` package resource to `~/.config/mango/config.default.yaml` on every startup, writing the file only when its content differs from the package resource (SHA-256 hash comparison).
 
-#### Scenario: First run creates config from resource
-- **WHEN** the user config file does not exist
-- **THEN** `ensure_config()` SHALL create it with the content of `default_config.yaml`
+#### Scenario: First run creates config.default.yaml in user config dir
+- **WHEN** `config.default.yaml` does not exist in the user config directory
+- **THEN** `ensure_config()` SHALL create it with the content of the package resource
 
-#### Scenario: Existing config is not overwritten
-- **WHEN** the user config file already exists
-- **THEN** `ensure_config()` SHALL leave it unchanged
+#### Scenario: Startup after package upgrade overwrites config.default.yaml
+- **WHEN** the package resource `config.default.yaml` has different content than the user's copy
+- **THEN** `ensure_config()` SHALL overwrite the user's file with the new package resource content
 
-### Requirement: EXAMPLE_CONFIG constant is removed from config.py
-The `EXAMPLE_CONFIG` string constant SHALL be removed from `config.py`. No other module SHALL define an inline YAML string as a substitute.
-
-#### Scenario: config.py has no inline YAML string
-- **WHEN** `config.py` is read
-- **THEN** it SHALL contain no multi-line string literal with YAML category/macro structure
+#### Scenario: Unchanged resource — no write performed
+- **WHEN** the package resource and the user's `config.default.yaml` have identical content
+- **THEN** `ensure_config()` SHALL NOT write to the file
