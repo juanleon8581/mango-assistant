@@ -1,3 +1,4 @@
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -19,10 +20,32 @@ def _save_merge_state(config_dir: Path, default_hash: str, local_hash: str | Non
     state_path.write_text(json.dumps({"default_hash": default_hash, "local_hash": local_hash}))
 
 
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def should_merge(config_dir: Path) -> bool:
+    default_path = config_dir / "config.default.yaml"
+    local_path = config_dir / "config.local.yaml"
+
+    state = _load_merge_state(config_dir)
+    if not state:
+        return True
+
+    if _sha256_file(default_path) != state.get("default_hash"):
+        return True
+
+    current_local_hash = _sha256_file(local_path) if local_path.exists() else None
+    return current_local_hash != state.get("local_hash")
+
+
 def merge_configs(config_dir: Path) -> list[str]:
     default_path = config_dir / "config.default.yaml"
     local_path = config_dir / "config.local.yaml"
     commands_path = config_dir / "commands.yaml"
+
+    if not should_merge(config_dir):
+        return []
 
     warnings: list[str] = []
 
@@ -79,6 +102,10 @@ def merge_configs(config_dir: Path) -> list[str]:
     commands_path.write_text(
         yaml.dump({"categories": merged_cats}, default_flow_style=False, allow_unicode=True, sort_keys=False)
     )
+
+    default_hash = _sha256_file(default_path)
+    local_hash = _sha256_file(local_path) if local_path.exists() else None
+    _save_merge_state(config_dir, default_hash, local_hash)
 
     for warning in warnings:
         print(warning, file=sys.stderr)
