@@ -21,5 +21,5 @@
 
 ## 5. Integration
 
-- [ ] 5.1 Update `main.py` to call `ensure_config()` (propagate default) then `merge_configs(config_dir)` (lazy merge) before `MangoApp.run()`, so `commands.yaml` is always up-to-date when the TUI opens
-- [ ] 5.2 Smoke-test the full flow using `XDG_CONFIG_HOME=.test-config mango`: verify `config.default.yaml` is created, `commands.yaml` is written, `.merge-state.json` is present, and a second run skips the merge
+- [x] 5.1 Update `main.py` to call `ensure_config()` (propagate default) then `merge_configs(config_dir)` (lazy merge) before `MangoApp.run()`, so `commands.yaml` is always up-to-date when the TUI opens
+- [x] 5.2 Smoke-test the full flow using `XDG_CONFIG_HOME=.test-config mango`: verify `config.default.yaml` is created, `commands.yaml` is written, `.merge-state.json` is present, and a second run skips the merge
