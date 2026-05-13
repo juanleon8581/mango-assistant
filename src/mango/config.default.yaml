@@ -11,6 +11,15 @@ categories:
         steps:
           - git checkout -b {branch}
           - git push -u origin {branch}
+      new-tag-and-push:
+        shortcut: "nt"
+        description: "Create a new tag and push it to origin"
+        params:
+          - name: tag
+            prompt: "Tag name"
+        steps:
+          - git tag {tag}
+          - git push --tags
       switch-and-pull:
         shortcut: "su"
         description: "Switch branch, fetch and pull"
