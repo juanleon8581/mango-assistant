@@ -339,9 +339,17 @@ class MainScreen(Screen):
         self.app.exit()
 
     def on_key(self, event) -> None:
-        if event.key == "q" and not isinstance(self.focused, Input):
+        if isinstance(self.focused, Input):
+            return
+        if event.key == "q":
             event.stop()
             self.app.exit()
+        elif event.key == "right" and self.focused and self.focused.id == "category-list":
+            event.stop()
+            self.query_one("#macro-list", ListView).focus()
+        elif event.key == "left" and self.focused and self.focused.id == "macro-list":
+            event.stop()
+            self.query_one("#category-list", ListView).focus()
 
 
 # ── App ───────────────────────────────────────────────────────────────────────

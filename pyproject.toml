@@ -3,13 +3,38 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mango"
-version = "0.1.0"
+name = "mango-tui"
+version = "0.2.0"
+description = "Keyboard-driven TUI for running multi-step shell command sequences defined in YAML"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
+authors = [
+    { name = "Juan Pablo Leon", email = "juanpabloleonmaya.dev@gmail.com" },
+]
+keywords = ["tui", "terminal", "cli", "macros", "shell", "automation", "textual"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+]
 dependencies = [
     "textual>=0.60.0",
     "pyyaml>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/juanleon8581/mango-assistant"
+Repository = "https://github.com/juanleon8581/mango-assistant"
+Issues = "https://github.com/juanleon8581/mango-assistant/issues"
 
 [project.scripts]
 mango = "mango.main:main"
