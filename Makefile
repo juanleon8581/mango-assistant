@@ -1,10 +1,12 @@
 .PHONY: install run dev venv build check publish publish-test
 
+PYTHON := .venv/bin/python
+
 venv:
 	python3 -m venv .venv
 
 install:
-	pip install -e .
+	$(PYTHON) -m pip install -e .
 
 run:
 	mango
@@ -13,14 +15,15 @@ dev:
 	XDG_CONFIG_HOME=.test-config mango
 
 build:
+	$(PYTHON) -m pip install --quiet build
 	rm -rf dist build
-	python -m build
+	$(PYTHON) -m build
 
 check:
-	twine check dist/*
+	$(PYTHON) -m twine check dist/*
 
 publish-test:
-	twine upload --repository testpypi dist/*
+	$(PYTHON) -m twine upload --repository testpypi dist/*
 
 publish:
-	twine upload dist/*
+	$(PYTHON) -m twine upload dist/*

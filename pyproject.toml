@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mango-tui"
-version = "0.2.0"
+version = "0.2.1"
 description = "Keyboard-driven TUI for running multi-step shell command sequences defined in YAML"
 readme = "README.md"
 license = "MIT"
