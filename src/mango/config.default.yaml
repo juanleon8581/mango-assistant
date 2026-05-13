@@ -71,3 +71,11 @@ categories:
             prompt: "Service name"
         steps:
           - docker compose logs -f {service}
+  mango:
+    shortcut: "m"
+    macros:
+      upgrade-mango:
+        shortcut: "up"
+        description: "Upgrade mango"
+        steps:
+          - pip install --force-reinstall --no-cache-dir git+https://github.com/juanleon8581/mango-assistant.git
