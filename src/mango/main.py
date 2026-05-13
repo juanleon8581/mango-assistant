@@ -3,9 +3,11 @@ from pathlib import Path
 
 from .config import ensure_config, get_config_path, load_config
 from .merger import merge_configs
+from .updater import check_for_update
 
 
 def main() -> None:
+    check_for_update()
     config_path = get_config_path()
     config_dir = config_path.parent
     try:
