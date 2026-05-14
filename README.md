@@ -1,115 +1,188 @@
-# mango
+<div align="center">
 
-A keyboard-driven terminal UI for running multi-step shell command sequences defined in YAML.
+# 🥭 mango
 
-## What it does
+**A keyboard-driven TUI for running your shell command sequences — no more copy-pasting the same commands.**
 
-mango lets you define "macros" — named sequences of shell commands — grouped into categories. You run them by navigating the TUI or typing shortcut combos like `g>su` (category `g`, macro `su`). Macros can prompt for parameters before running.
+[![PyPI version](https://img.shields.io/pypi/v/mango-tui)](https://pypi.org/project/mango-tui/)
+[![Python versions](https://img.shields.io/pypi/pyversions/mango-tui)](https://pypi.org/project/mango-tui/)
+[![License](https://img.shields.io/github/license/juanleon8581/mango-assistant)](LICENSE)
 
-## Requirements
+</div>
 
-- Python 3.10+
+---
 
-## Installation
+![mango TUI — main view](docs/screenshot-main.png)
+
+---
+
+## Install
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+pip install mango-tui
 ```
 
-## Usage
+Requires Python 3.10+.
+
+## Run
 
 ```bash
 mango
 ```
 
-Navigate with arrow keys or `j`/`k`. Press `Enter` to run a macro. If the macro has params, a dialog prompts for them before execution. Output streams to a panel at the bottom. Press `q` to quit.
+That's it. On first run mango creates its config at `~/.config/mango/` and opens the TUI.
 
-**Shortcut mode:** type `<category_shortcut>><macro_shortcut>` (e.g. `g>su`) to jump directly to a macro from anywhere in the TUI.
+---
 
-## Config
+## How it works
 
-mango manages three files under `~/.config/mango/` (respects `$XDG_CONFIG_HOME`):
+mango lets you define **macros** — named sequences of shell commands — grouped by category. You pick one from the TUI and it runs, streaming output to the bottom panel in real time.
 
-| File | Purpose |
+Macros that need input (a branch name, a service, a version tag) show a prompt dialog before running.
+
+![mango TUI — param dialog](docs/screenshot-params.png)
+
+---
+
+## Keyboard reference
+
+| Key | Action |
 |---|---|
-| `config.default.yaml` | Macros bundled with the package — updated automatically on each startup |
-| `config.local.yaml` | Your personal macros — optional, persists across package updates |
-| `commands.yaml` | Merge output read by the app — **do not edit manually** |
+| `↑` / `↓` | Move through the list |
+| `←` / `→` | Switch between category and macro panels |
+| `Enter` | Run the selected macro |
+| `Tab` / `Shift+Tab` | Cycle focus (categories → macros → shortcut bar) |
+| `q` | Quit |
 
-On each startup mango propagates the built-in defaults and merges them with your local config into `commands.yaml`. The merge is lazy: it only runs when either source file changes.
+### Shortcut mode
 
-### Adding your own macros
+Type `<category>><macro>` at any time to jump straight to a macro without using the menus:
 
-Create `~/.config/mango/config.local.yaml` with the same YAML schema:
+```
+g>su   →  git › switch-and-pull
+g>cb   →  git › create-branch-push
+d>up   →  docker › up
+```
+
+---
+
+## Built-in macros
+
+mango ships with a set of common macros ready to use:
+
+### `g` — Git
+
+| Shortcut | Description |
+|---|---|
+| `g>cb` | Create a new branch and push it to origin |
+| `g>su` | Switch to a branch, fetch and pull |
+| `g>db` | Delete branch locally and on remote, then prune |
+| `g>nt` | Create a new tag and push it |
+| `g>st` | Show git status |
+| `g>lo` | Show the last 10 commits |
+
+### `d` — Docker
+
+| Shortcut | Description |
+|---|---|
+| `d>up` | `docker compose up -d` |
+| `d>dn` | `docker compose down` |
+| `d>lg` | Follow logs for a service |
+
+### `m` — Mango
+
+| Shortcut | Description |
+|---|---|
+| `m>up` | Upgrade mango to the latest version |
+
+---
+
+## Adding your own macros
+
+Create `~/.config/mango/config.local.yaml`. Your macros are merged with the built-in defaults and survive package upgrades.
 
 ```yaml
 categories:
   git:
-    shortcut: "g"          # must match the default exactly to add macros into it
+    shortcut: "g"          # must match an existing category exactly to add macros into it
     macros:
-      my-cleanup:
+      cleanup:
         shortcut: "cl"
         description: "Delete merged branches"
         steps:
           - git branch --merged | grep -v main | xargs git branch -d
-  my-tools:                # entirely new category — key and shortcut must not exist in defaults
+
+  tools:                   # a new category — key and shortcut must not exist in the defaults
     shortcut: "t"
     macros:
       hello:
         shortcut: "hi"
         description: "Say hello"
         steps:
-          - echo "hello"
+          - echo "hello world"
 ```
 
-**Merge rules:**
+### Macros with parameters
 
-- To add macros into an existing default category: the category `key` and `shortcut` must match the default exactly.
-- To add a new category: both the `key` and `shortcut` must not exist in the defaults.
-- Within a shared category, each local macro must have a `key` and `shortcut` not already used by the defaults.
-
-Conflicts are skipped and reported to stderr before the TUI opens:
-
-```
-[mango] config conflict: category 'tools' — shortcut 'g' already used by 'git' (skipped)
-[mango] config conflict: macro 'git>status' — key already defined in default (skipped)
-```
-
-### Schema reference
+Use `params` to collect input before the steps run. Reference each param in steps as `{name}`:
 
 ```yaml
 categories:
-  git:
-    shortcut: "g"
+  tools:
+    shortcut: "t"
     macros:
-      switch-and-pull:
-        shortcut: "su"
-        description: "Switch branch, fetch and pull"
+      deploy:
+        shortcut: "dp"
+        description: "Deploy to an environment"
         params:
+          - name: env
+            prompt: "Environment (staging/prod)"
+        steps:
+          - ./deploy.sh {env}
+          - echo "Deployed to {env}"
+```
+
+---
+
+## Config files
+
+mango manages three files under `~/.config/mango/` (respects `$XDG_CONFIG_HOME`):
+
+| File | What it is |
+|---|---|
+| `config.default.yaml` | Built-in macros — overwritten on each update |
+| `config.local.yaml` | **Your macros** — edit this one |
+| `commands.yaml` | Merged result read by the app — do not edit |
+
+### Merge rules
+
+- To **add macros into an existing category**: use the same category key and shortcut as the default.
+- To **add a new category**: both the key and shortcut must not conflict with any default.
+- Within a shared category, each local macro key and shortcut must be unique.
+
+Conflicts are skipped and reported before the TUI opens:
+
+```
+[mango] config conflict: macro 'git>status' — key already defined in default (skipped)
+```
+
+---
+
+## YAML schema reference
+
+```yaml
+categories:
+  <category-key>:
+    shortcut: "g"            # unique globally; one or more chars
+    macros:
+      <macro-key>:
+        shortcut: "su"       # unique within its category
+        description: "..."
+        params:              # optional
           - name: branch
             prompt: "Branch name"
-        steps:
+        steps:               # run sequentially; first non-zero exit aborts
           - git checkout {branch}
           - git fetch
           - git pull
-      status:
-        shortcut: "st"
-        description: "Show git status"
-        steps:
-          - git status
 ```
-
-- `shortcut` — unique within its scope (category shortcuts must be globally unique; macro shortcuts must be unique within their category)
-- `params` — optional list of `{name, prompt}` pairs; referenced in steps as `{name}`
-- `steps` — shell commands run sequentially; first non-zero exit code aborts the sequence
-
-## Development
-
-```bash
-# Test with a local config instead of ~/.config/mango/
-XDG_CONFIG_HOME=.test-config mango
-```
-
-Dependencies: [`textual`](https://github.com/Textualize/textual), [`pyyaml`](https://pyyaml.org/)
