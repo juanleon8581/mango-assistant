@@ -7,7 +7,7 @@ from .updater import check_for_update
 
 
 def main() -> None:
-    check_for_update()
+    update_info = check_for_update()
     config_path = get_config_path()
     config_dir = config_path.parent
     try:
@@ -21,5 +21,5 @@ def main() -> None:
     from .tui.app import MangoApp
 
     cwd = str(Path.cwd())
-    app = MangoApp(config=config, cwd=cwd)
+    app = MangoApp(config=config, cwd=cwd, update_info=update_info)
     app.run()

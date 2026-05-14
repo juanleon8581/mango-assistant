@@ -359,10 +359,19 @@ class MangoApp(App):
     TITLE = "mango"
     SUB_TITLE = "macro runner"
 
-    def __init__(self, config: Config, cwd: str) -> None:
+    def __init__(self, config: Config, cwd: str, update_info: tuple[str, str] | None = None) -> None:
         super().__init__()
         self._config = config
         self._cwd = cwd
+        self._update_info = update_info
 
     def on_mount(self) -> None:
         self.push_screen(MainScreen(config=self._config, cwd=self._cwd))
+        if self._update_info:
+            current, latest = self._update_info
+            self.notify(
+                f"pip install --upgrade mango-tui",
+                title=f"Update available: {current} → {latest}",
+                severity="warning",
+                timeout=10.0,
+            )
