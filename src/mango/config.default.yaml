@@ -142,6 +142,37 @@ categories:
         description: "container | start"
         steps:
           - docker compose up -d
+  ssh:
+    shortcut: "s"
+    macros:
+      upload:
+        shortcut: "su"
+        description: "file | upload to remote"
+        params:
+          - name: local_path
+            prompt: "Local path"
+          - name: user
+            prompt: "Remote user"
+          - name: host
+            prompt: "Remote host"
+          - name: remote_path
+            prompt: "Remote path"
+        steps:
+          - scp -r {local_path} {user}@{host}:{remote_path}
+      download:
+        shortcut: "sd"
+        description: "file | download from remote"
+        params:
+          - name: user
+            prompt: "Remote user"
+          - name: host
+            prompt: "Remote host"
+          - name: remote_path
+            prompt: "Remote path"
+          - name: local_path
+            prompt: "Local destination path"
+        steps:
+          - scp -r {user}@{host}:{remote_path} {local_path}
   mango:
     shortcut: "m"
     macros:
