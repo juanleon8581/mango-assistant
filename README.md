@@ -59,9 +59,9 @@ Macros that need input (a branch name, a service, a version tag) show a prompt d
 Type `<category>><macro>` at any time to jump straight to a macro without using the menus:
 
 ```
-g>su   →  git › switch-and-pull
-g>cb   →  git › create-branch-push
-d>up   →  docker › up
+g>bs   →  git › switch-and-pull
+g>bc   →  git › create-branch-push
+d>cu   →  docker › up
 ```
 
 ---
@@ -74,26 +74,37 @@ mango ships with a set of common macros ready to use:
 
 | Shortcut | Description |
 |---|---|
-| `g>cb` | Create a new branch and push it to origin |
-| `g>su` | Switch to a branch, fetch and pull |
-| `g>db` | Delete branch locally and on remote, then prune |
-| `g>nt` | Create a new tag and push it |
-| `g>st` | Show git status |
-| `g>lo` | Show the last 10 commits |
+| `g>bc` | branch \| create and push |
+| `g>bd` | branch \| delete local, remote and prune |
+| `g>br` | branch \| rename local and remote |
+| `g>bs` | branch \| switch and pull |
+| `g>cf` | clean \| remove untracked files |
+| `g>gl` | git \| show recent commits |
+| `g>gs` | git \| show status |
+| `g>mb` | merge \| branch into current |
+| `g>rh` | reset \| hard to HEAD |
+| `g>ru` | reset \| undo last commit |
+| `g>sc` | stash \| create |
+| `g>sp` | stash \| pop |
+| `g>tc` | tag \| create and push |
 
 ### `d` — Docker
 
 | Shortcut | Description |
 |---|---|
-| `d>up` | `docker compose up -d` |
-| `d>dn` | `docker compose down` |
-| `d>lg` | Follow logs for a service |
+| `d>cb` | container \| build and start |
+| `d>cd` | container \| stop |
+| `d>ce` | container \| exec shell |
+| `d>cl` | container \| follow service logs |
+| `d>cp` | container \| prune stopped |
+| `d>cr` | container \| restart service |
+| `d>cu` | container \| start |
 
 ### `m` — Mango
 
 | Shortcut | Description |
 |---|---|
-| `m>up` | Upgrade mango to the latest version |
+| `m>mu` | mango \| upgrade |
 
 ---
 
