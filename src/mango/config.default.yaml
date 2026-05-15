@@ -3,36 +3,17 @@ categories:
     shortcut: "g"
     macros:
       create-branch-push:
-        shortcut: "cb"
-        description: "Create a new branch and push it to origin"
+        shortcut: "bc"
+        description: "branch | create and push"
         params:
           - name: branch
             prompt: "Branch name"
         steps:
           - git checkout -b {branch}
           - git push -u origin {branch}
-      new-tag-and-push:
-        shortcut: "nt"
-        description: "Create a new tag and push it to origin"
-        params:
-          - name: tag
-            prompt: "Tag name"
-        steps:
-          - git tag {tag}
-          - git push --tags
-      switch-and-pull:
-        shortcut: "su"
-        description: "Switch branch, fetch and pull"
-        params:
-          - name: branch
-            prompt: "Branch name"
-        steps:
-          - git checkout {branch}
-          - git fetch
-          - git pull
       delete-branch-local-remote-and-prune:
-        shortcut: "db"
-        description: "Delete branch in local and remote, and prune"
+        shortcut: "bd"
+        description: "branch | delete local, remote and prune"
         params:
           - name: branch
             prompt: "Branch name"
@@ -40,42 +21,182 @@ categories:
           - git push origin --delete {branch}
           - git branch -D {branch}
           - git fetch --prune
-      status:
-        shortcut: "st"
-        description: "Show git status"
+      rename-branch-local-and-remote:
+        shortcut: "br"
+        description: "branch | rename local and remote"
+        params:
+          - name: old_branch
+            prompt: "Current branch name"
+          - name: new_branch
+            prompt: "New branch name"
         steps:
-          - git status
+          - git branch -m {old_branch} {new_branch}
+          - git push origin -u {new_branch}
+          - git push origin --delete {old_branch}
+      switch-and-pull:
+        shortcut: "bs"
+        description: "branch | switch and pull"
+        params:
+          - name: branch
+            prompt: "Branch name"
+        steps:
+          - git checkout {branch}
+          - git fetch
+          - git pull
+      clean-untracked:
+        shortcut: "cf"
+        description: "clean | remove untracked files"
+        steps:
+          - git clean -fd
       log:
-        shortcut: "lo"
-        description: "Show recent commits"
+        shortcut: "gl"
+        description: "git | show recent commits"
         steps:
           - git log --oneline -10
+      status:
+        shortcut: "gs"
+        description: "git | show status"
+        steps:
+          - git status
+      merge-branch:
+        shortcut: "mb"
+        description: "merge | branch into current"
+        params:
+          - name: branch
+            prompt: "Branch to merge"
+        steps:
+          - git merge {branch}
+      reset-hard:
+        shortcut: "rh"
+        description: "reset | hard to HEAD"
+        steps:
+          - git reset --hard HEAD
+      reset-undo-last-commit:
+        shortcut: "ru"
+        description: "reset | undo last commit"
+        steps:
+          - git reset HEAD~1 --soft
+      stash-create:
+        shortcut: "sc"
+        description: "stash | create"
+        steps:
+          - git stash
+      stash-pop:
+        shortcut: "sp"
+        description: "stash | pop"
+        steps:
+          - git stash pop
+      new-tag-and-push:
+        shortcut: "tc"
+        description: "tag | create and push"
+        params:
+          - name: tag
+            prompt: "Tag name"
+        steps:
+          - git tag {tag}
+          - git push --tags
   docker:
     shortcut: "d"
     macros:
-      up:
-        shortcut: "up"
-        description: "Start containers"
+      build-and-start:
+        shortcut: "cb"
+        description: "container | build and start"
         steps:
-          - docker compose up -d
+          - docker compose up --build -d
       down:
-        shortcut: "dn"
-        description: "Stop containers"
+        shortcut: "cd"
+        description: "container | stop"
         steps:
           - docker compose down
+      exec-shell:
+        shortcut: "ce"
+        description: "container | exec shell"
+        params:
+          - name: service
+            prompt: "Service name"
+        steps:
+          - docker compose exec {service} sh
       logs:
-        shortcut: "lg"
-        description: "Follow logs for a service"
+        shortcut: "cl"
+        description: "container | follow service logs"
         params:
           - name: service
             prompt: "Service name"
         steps:
           - docker compose logs -f {service}
+      prune:
+        shortcut: "cp"
+        description: "container | prune stopped"
+        steps:
+          - docker system prune -f
+      restart:
+        shortcut: "cr"
+        description: "container | restart service"
+        params:
+          - name: service
+            prompt: "Service name"
+        steps:
+          - docker compose restart {service}
+      up:
+        shortcut: "cu"
+        description: "container | start"
+        steps:
+          - docker compose up -d
+  ssh:
+    shortcut: "s"
+    macros:
+      upload:
+        shortcut: "su"
+        description: "file | upload to remote"
+        params:
+          - name: local_path
+            prompt: "Local path"
+          - name: user
+            prompt: "Remote user"
+          - name: host
+            prompt: "Remote host"
+          - name: remote_path
+            prompt: "Remote path"
+        steps:
+          - scp -r {local_path} {user}@{host}:{remote_path}
+      download:
+        shortcut: "sd"
+        description: "file | download from remote"
+        params:
+          - name: user
+            prompt: "Remote user"
+          - name: host
+            prompt: "Remote host"
+          - name: remote_path
+            prompt: "Remote path"
+          - name: local_path
+            prompt: "Local destination path"
+        steps:
+          - scp -r {user}@{host}:{remote_path} {local_path}
+  node:
+    shortcut: "n"
+    macros:
+      ncu-check:
+        shortcut: "nc"
+        description: "ncu | check outdated deps"
+        steps:
+          - npx npm-check-updates
+      ncu-upgrade-all:
+        shortcut: "nu"
+        description: "ncu | upgrade all deps"
+        steps:
+          - npx npm-check-updates -u
+          - npm install
+      ncu-doctor:
+        shortcut: "nd"
+        description: "ncu | doctor mode (safe upgrade)"
+        steps:
+          - npx npm-check-updates --doctor -u
   mango:
     shortcut: "m"
     macros:
       upgrade-mango:
-        shortcut: "up"
-        description: "Upgrade mango"
+        shortcut: "mu"
+        description: "mango | upgrade"
         steps:
           - pip install --upgrade mango-tui
