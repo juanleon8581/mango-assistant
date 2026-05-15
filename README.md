@@ -100,6 +100,14 @@ mango ships with a set of common macros ready to use:
 | `d>cr` | container \| restart service |
 | `d>cu` | container \| start |
 
+### `n` — Node
+
+| Shortcut | Description |
+|---|---|
+| `n>nc` | ncu \| check outdated deps |
+| `n>nd` | ncu \| doctor mode (safe upgrade) |
+| `n>nu` | ncu \| upgrade all deps |
+
 ### `m` — Mango
 
 | Shortcut | Description |
