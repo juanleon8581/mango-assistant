@@ -18,7 +18,7 @@ El sistema SHALL buscar el archivo de configuración en `~/.config/mango/command
 - **THEN** el sistema crea `~/.config/mango/commands.yaml` con contenido de ejemplo y lo carga
 
 ### Requirement: Config schema — categories
-El archivo de config SHALL definir categorías como claves bajo `categories`. Cada categoría SHALL tener un campo `shortcut` (string de 1+ caracteres, único entre todas las categorías) y un campo `macros` (mapa de macros).
+El archivo de config SHALL definir categorías como claves bajo `categories`. Cada categoría SHALL tener un campo `shortcut` (string de 1+ caracteres, único entre todas las categorías) y un campo `macros` (mapa de macros). El sistema SHALL ordenar las categorías por `(len(shortcut), name)` al cargar la configuración — el orden de inserción en el YAML no determina el orden de display.
 
 #### Scenario: Valid category definition
 - **WHEN** el YAML contiene una categoría con `shortcut` y al menos una macro
@@ -27,6 +27,10 @@ El archivo de config SHALL definir categorías como claves bajo `categories`. Ca
 #### Scenario: Duplicate category shortcut
 - **WHEN** dos categorías tienen el mismo valor de `shortcut`
 - **THEN** el sistema muestra un error descriptivo al iniciar y no renderiza el TUI
+
+#### Scenario: Category display order
+- **WHEN** el sistema carga el config mergeado
+- **THEN** las categorías se muestran ordenadas por longitud de shortcut (ascendente), luego alfabéticamente por nombre — no en orden de aparición en el YAML
 
 ### Requirement: Config schema — macros
 Cada macro SHALL tener: `shortcut` (string único dentro de su categoría), `description` (string), `steps` (lista de strings con comandos shell). Opcionalmente puede tener `params` (lista de objetos con `name` y `prompt`).
