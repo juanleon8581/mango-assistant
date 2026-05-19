@@ -1,3 +1,5 @@
+import re
+
 from textual import on, work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -6,6 +8,12 @@ from textual.screen import ModalScreen, Screen
 from textual.widgets import Input, Label, ListItem, ListView, RichLog, Static
 
 from ..config import Category, Config, Macro, Param
+
+
+def _strip_to_plain(line: str) -> str:
+    line = re.sub(r'\x1b\[[0-9;]*[mA-Za-z]', '', line)
+    line = re.sub(r'\[/?[^\]]+\]', '', line)
+    return line
 
 
 # ── Custom ListItem subclasses ────────────────────────────────────────────────
@@ -170,6 +178,7 @@ class MainScreen(Screen):
         self._cwd = cwd
         self._categories = list(config.categories.values())
         self._selected_cat_idx = 0
+        self._output_lines: list[str] = []
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="panels"):
@@ -270,6 +279,7 @@ class MainScreen(Screen):
         output_log = self.query_one("#output-log", RichLog)
         output_log.clear()
         output_log.display = True
+        self._output_lines.clear()
         self._set_status(f"Running: {macro.description}…")
         self._run_worker(macro, params, output_log)
 
@@ -280,6 +290,7 @@ class MainScreen(Screen):
         from ..runner import run_macro
 
         def on_output(line: str) -> None:
+            self._output_lines.append(_strip_to_plain(line))
             self.app.call_from_thread(output_log.write, line)
 
         try:
@@ -341,7 +352,13 @@ class MainScreen(Screen):
     def on_key(self, event) -> None:
         if isinstance(self.focused, Input):
             return
-        if event.key == "q":
+        if event.key == "ctrl+c":
+            output_log = self.query_one("#output-log", RichLog)
+            if output_log.display:
+                event.stop()
+                self.app.copy_to_clipboard("\n".join(self._output_lines))
+                self.app.notify("Copied to clipboard")
+        elif event.key == "q":
             event.stop()
             self.app.exit()
         elif event.key == "right" and self.focused and self.focused.id == "category-list":
