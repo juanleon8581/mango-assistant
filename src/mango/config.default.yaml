@@ -200,3 +200,36 @@ categories:
         description: "mango | upgrade"
         steps:
           - pip install --upgrade mango-tui
+  help:
+    shortcut: "help"
+    macros:
+      navigation:
+        shortcut: "nav"
+        description: "help | navigation keys"
+        steps:
+          - "printf 'Navigation:\n  Up / Down       Move through categories or macros\n  Right / Left    Switch focus between Categories and Macros panels\n  Tab             Cycle focus: Categories -> Macros -> Shortcut bar\n  Shift+Tab       Cycle focus in reverse\n  Enter           Select category or run macro\n'"
+      shortcuts:
+        shortcut: "sc"
+        description: "help | shortcut bar usage"
+        steps:
+          - "printf 'Shortcut bar (bottom input field):\n  Format: <category>><macro>   e.g.  g>gs\n  Type the shortcut and press Enter to run the macro directly.\n\n  Examples:\n    g>gs   git status\n    g>gl   git log\n    g>bc   create and push branch\n'"
+      copy-output:
+        shortcut: "cp"
+        description: "help | copy output to clipboard"
+        steps:
+          - "printf 'Copy output to clipboard:\n  Press Ctrl+C while the output panel is visible.\n  A notification confirms the copy.\n\n  Note: Ctrl+C copies output only — it does NOT quit mango.\n'"
+      quit:
+        shortcut: "qt"
+        description: "help | how to quit"
+        steps:
+          - "printf 'Quit mango:\n  Press Q       (when focus is not on an input field)\n  Press Escape  (when focus is not on an input field)\n\n  Inside a parameter dialog:\n    Press Escape to cancel and return to the main screen.\n'"
+      config-file:
+        shortcut: "cfg"
+        description: "help | config file location"
+        steps:
+          - "printf 'Create a file in ~/.config/mango/config.local.yaml and add your custom macros there. It will automatically merge with the default config.'"
+      docs:
+        shortcut: "doc"
+        description: "help | documentation and source"
+        steps:
+          - "printf 'Documentation and source:\n  GitHub:  https://github.com/juanleon8581/mango-assistant\n  Issues:  https://github.com/juanleon8581/mango-assistant/issues\n  PyPI:    https://pypi.org/project/mango-tui/\n\nUpgrade mango:\n  Run macro  m>mu\n  Or:        pip install --upgrade mango-tui\n'"
