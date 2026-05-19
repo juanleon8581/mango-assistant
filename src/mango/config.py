@@ -103,7 +103,8 @@ def _parse_category(data: object, cat_key: str) -> Category:
             raise ValueError(f"Category '{cat_key}': duplicate macro shortcut '{macro.shortcut}'")
         seen_shortcuts.add(macro.shortcut)
         macros[mk] = macro
-    return Category(name=cat_key, shortcut=str(shortcut), macros=macros)
+    sorted_macros = dict(sorted(macros.items(), key=lambda item: (len(item[1].shortcut), item[1].description)))
+    return Category(name=cat_key, shortcut=str(shortcut), macros=sorted_macros)
 
 
 def load_config(path: Path) -> Config:
@@ -121,7 +122,8 @@ def load_config(path: Path) -> Config:
             raise ValueError(f"Duplicate category shortcut '{cat.shortcut}'")
         seen_shortcuts.add(cat.shortcut)
         categories[ck] = cat
-    return Config(categories=categories)
+    sorted_categories = dict(sorted(categories.items(), key=lambda item: (len(item[1].shortcut), item[1].name)))
+    return Config(categories=sorted_categories)
 
 
 def interpolate(template: str, params: dict[str, str]) -> str:
